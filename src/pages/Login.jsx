@@ -38,30 +38,47 @@ function Login() {
   };
 
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
-        <h2 style={styles.title}>Attendance System</h2>
-        <p style={styles.subtitle}>Sign in to continue</p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+        
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-1">
+          Attendance System
+        </h2>
+        <p className="text-center text-gray-500 text-sm mb-6">
+          Sign in to continue
+        </p>
 
-        <div style={styles.roleContainer}>
+        <div className="flex gap-3 mb-6">
           <button
-            style={role === "student" ? styles.roleActive : styles.roleInactive}
+            className={`flex-1 py-2 rounded-lg font-semibold transition-all ${
+              role === "student"
+                ? "bg-gray-900 text-white"
+                : "bg-white text-gray-900 border border-gray-900"
+            }`}
             onClick={() => setRole("student")}
           >
             Student
           </button>
           <button
-            style={role === "lecturer" ? styles.roleActive : styles.roleInactive}
+            className={`flex-1 py-2 rounded-lg font-semibold transition-all ${
+              role === "lecturer"
+                ? "bg-gray-900 text-white"
+                : "bg-white text-gray-900 border border-gray-900"
+            }`}
             onClick={() => setRole("lecturer")}
           >
             Lecturer
           </button>
         </div>
 
-        {error && <p style={styles.error}>{error}</p>}
+        {error && (
+          <p className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg mb-4">
+            {error}
+          </p>
+        )}
 
         <input
-          style={styles.input}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-4 focus:outline-none focus:border-gray-900"
           type="email"
           placeholder="Email address"
           value={email}
@@ -69,7 +86,7 @@ function Login() {
         />
 
         <input
-          style={styles.input}
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-6 focus:outline-none focus:border-gray-900"
           type="password"
           placeholder="Password"
           value={password}
@@ -77,7 +94,7 @@ function Login() {
         />
 
         <button
-          style={styles.button}
+          className="w-full py-3 bg-gray-900 text-white rounded-lg font-bold text-base hover:bg-gray-700 transition-all disabled:opacity-50"
           onClick={handleLogin}
           disabled={loading}
         >
@@ -87,83 +104,5 @@ function Login() {
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#f0f2f5",
-  },
-  card: {
-    backgroundColor: "white",
-    padding: "2rem",
-    borderRadius: "12px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-    width: "100%",
-    maxWidth: "400px",
-  },
-  title: {
-    textAlign: "center",
-    marginBottom: "0.5rem",
-    color: "#1a1a2e",
-  },
-  subtitle: {
-    textAlign: "center",
-    color: "#666",
-    marginBottom: "1.5rem",
-  },
-  roleContainer: {
-    display: "flex",
-    gap: "10px",
-    marginBottom: "1.5rem",
-  },
-  roleActive: {
-    flex: 1,
-    padding: "10px",
-    backgroundColor: "#1a1a2e",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontWeight: "bold",
-  },
-  roleInactive: {
-    flex: 1,
-    padding: "10px",
-    backgroundColor: "white",
-    color: "#1a1a2e",
-    border: "1px solid #1a1a2e",
-    borderRadius: "8px",
-    cursor: "pointer",
-  },
-  input: {
-    width: "100%",
-    padding: "12px",
-    marginBottom: "1rem",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    fontSize: "14px",
-    boxSizing: "border-box",
-  },
-  button: {
-    width: "100%",
-    padding: "12px",
-    backgroundColor: "#1a1a2e",
-    color: "white",
-    border: "none",
-    borderRadius: "8px",
-    cursor: "pointer",
-    fontSize: "16px",
-    fontWeight: "bold",
-  },
-  error: {
-    color: "red",
-    fontSize: "13px",
-    marginBottom: "1rem",
-    textAlign: "center",
-  },
-};
 
 export default Login;

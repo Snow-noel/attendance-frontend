@@ -11,49 +11,19 @@ function Navbar() {
   };
 
   return (
-    <nav style={styles.nav}>
-      <div style={styles.brand}>Attendance System</div>
-      <div style={styles.right}>
-        <span style={styles.email}>{user?.email}</span>
-        <button style={styles.logoutBtn} onClick={handleLogout}>
+<nav className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+      <h1 className="text-lg font-bold">Attendance System</h1>
+      <div className="flex items-center gap-4">
+        <span className="text-gray-400 text-sm">{user?.email}</span>
+        <button
+          className="px-4 py-1.5 border border-white rounded-lg text-sm hover:bg-white hover:text-gray-900 transition-all"
+          onClick={handleLogout}
+        >
           Logout
         </button>
       </div>
     </nav>
   );
 }
-
-const styles = {
-  nav: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: "1rem 2rem",
-    backgroundColor: "#1a1a2e",
-    color: "white",
-  },
-  brand: {
-    fontSize: "18px",
-    fontWeight: "bold",
-  },
-  right: {
-    display: "flex",
-    alignItems: "center",
-    gap: "1rem",
-  },
-  email: {
-    fontSize: "14px",
-    color: "#ccc",
-  },
-  logoutBtn: {
-    padding: "6px 16px",
-    backgroundColor: "transparent",
-    color: "white",
-    border: "1px solid white",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontSize: "13px",
-  },
-};
 
 export default Navbar;

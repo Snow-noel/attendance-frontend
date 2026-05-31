@@ -6,6 +6,7 @@ import { getStudentAttendance } from "../services/api";
 function StudentDashboard() {
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showScanner, setShowScanner] = useState(false);
 
   useEffect(() => {
     getStudentAttendance()
@@ -20,88 +21,69 @@ function StudentDashboard() {
   }, []);
 
   return (
-    <div style={styles.container}>
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
-      <div style={styles.content}>
-        <h2 style={styles.title}>My Attendance</h2>
-        <QRScanner />
 
-        {loading ? (
-          <p>Loading...</p>
-        ) : attendance.length === 0 ? (
-          <p style={styles.empty}>No attendance records found.</p>
-        ) : (
-          <div>
-            {attendance.map((record, index) => (
-              <div key={index} style={styles.card}>
-                <div style={styles.cardLeft}>
-                  <h4 style={styles.moduleName}>{record.module_name}</h4>
-                  <p style={styles.date}>
-                    {new Date(record.marked_at).toLocaleDateString()}
-                  </p>
-                </div>
-                <span style={styles.badge}>Present</span>
-              </div>
-            ))}
+      <div className="max-w-3xl mx-auto px-4 py-8">
+        
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-gray-800">My Attendance</h2>
+          <button
+            className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-700 transition-all"
+            onClick={() => setShowScanner(!showScanner)}
+          >
+            {showScanner ? "Hide Scanner" : "Scan QR Code"}
+          </button>
+        </div>
+
+        {/* QR Scanner */}
+        {showScanner && (
+          <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+            <QRScanner />
           </div>
         )}
+
+        {/* Attendance Records */}
+        <div className="bg-white rounded-2xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Attendance Records
+          </h3>
+
+          {loading ? (
+            <p className="text-gray-400 text-center py-8">Loading...</p>
+          ) : attendance.length === 0 ? (
+            <p className="text-gray-400 text-center py-8">
+              No attendance records found.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {attendance.map((record, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center p-4 bg-gray-50 rounded-xl"
+                >
+                  <div>
+                    <p className="font-semibold text-gray-800">
+                      {record.module_name}
+                    </p>
+                    <p className="text-sm text-gray-400">
+                      {new Date(record.marked_at).toLocaleDateString("en-MW", {
+                        timeZone: "Africa/Blantyre",
+                      })}
+                    </p>
+                  </div>
+                  <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                    Present
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: "100vh",
-    backgroundColor: "#f0f2f5",
-  },
-  content: {
-    maxWidth: "800px",
-    margin: "2rem auto",
-    padding: "0 1rem",
-  },
-  title: {
-    fontSize: "22px",
-    marginBottom: "1.5rem",
-    color: "#1a1a2e",
-  },
-  card: {
-    backgroundColor: "white",
-    padding: "1rem 1.5rem",
-    borderRadius: "10px",
-    marginBottom: "10px",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-  },
-  cardLeft: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  moduleName: {
-    margin: 0,
-    color: "#1a1a2e",
-    fontSize: "15px",
-  },
-  date: {
-    margin: "4px 0 0",
-    fontSize: "12px",
-    color: "#888",
-  },
-  badge: {
-    backgroundColor: "#e6f4ea",
-    color: "#2e7d32",
-    padding: "4px 12px",
-    borderRadius: "20px",
-    fontSize: "12px",
-    fontWeight: "bold",
-  },
-  empty: {
-    color: "#888",
-    textAlign: "center",
-    marginTop: "3rem",
-  },
-};
 
 export default StudentDashboard;
