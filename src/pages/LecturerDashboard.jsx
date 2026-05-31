@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import { startSession } from "../services/api";
 import { QRCodeSVG } from "qrcode.react";
@@ -8,6 +8,28 @@ function LecturerDashboard() {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [timeLeft, setTimeLeft] = useState(null);
+
+  useEffect(() => {
+    if (!session) return;
+
+    const expiry = new Date(session.expires_at);
+    const remaining = expiry - new Date();
+    setTimeLeft(remaining);
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1000) {
+          clearInterval(interval);
+          handleEndSession();
+          return 0;
+        }
+        return prev - 1000;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [session]);
 
   const handleStartSession = async () => {
     if (!moduleId) {
@@ -31,6 +53,7 @@ function LecturerDashboard() {
   const handleEndSession = () => {
     setSession(null);
     setModuleId("");
+    setTimeLeft(null);
   };
 
   return (
@@ -103,6 +126,22 @@ function LecturerDashboard() {
                   timeZone: "Africa/Blantyre",
                 })}
               </p>
+
+              <div
+                className={`text-4xl font-bold mt-3 ${
+                  timeLeft <= 60000 ? "text-red-600" : "text-gray-800"
+                }`}
+              >
+                {timeLeft !== null && (
+                  <>
+                    {String(Math.floor(timeLeft / 60000)).padStart(2, "0")}:
+                    {String(
+                      Math.floor((timeLeft % 60000) / 1000)
+                    ).padStart(2, "0")}
+                  </>
+                )}
+              </div>
+              <p className="text-gray-400 text-xs mt-1">Time remaining</p>
             </div>
 
             <button

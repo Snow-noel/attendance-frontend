@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { studentLogin, lecturerLogin } from "../services/api";
 
 function Login() {
+  
   const [role, setRole] = useState("student");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -21,8 +22,15 @@ function Login() {
       const response = role === "student"
         ? await studentLogin({ email, password })
         : await lecturerLogin({ email, password });
+      const decoded = JSON.parse(atob(response.data.token.split(".")[1]));
+      console.log("decoded:", decoded);
+      login({ 
+        email: decoded.email, 
+        role: decoded.role, 
+        first_name: decoded.first_name, 
+        last_name: decoded.last_name 
+      }, response.data.token);
 
-      login({ email, role }, response.data.token);
 
       if (role === "student") {
         navigate("/student/dashboard");
