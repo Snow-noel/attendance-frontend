@@ -23,7 +23,6 @@ function Register() {
 
   const navigate = useNavigate();
 
-  // fetch schools when page loads
   useEffect(() => {
     getSchools()
       .then((res) => setSchools(res.data.schools))
