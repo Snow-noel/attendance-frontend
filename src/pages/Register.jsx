@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { studentRegister } from "../services/api";
+import { studentRegister, getSchools, getDepartments, getPrograms } from "../services/api";
 
 function Register() {
   const [first_name, setFirstName] = useState("");
@@ -8,12 +8,49 @@ function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [registration_number, setRegistrationNumber] = useState("");
+
+  const [schools, setSchools] = useState([]);
+  const [departments, setDepartments] = useState([]);
+  const [programs, setPrograms] = useState([]);
+
+  const [school_id, setSchoolId] = useState("");
+  const [department_id, setDepartmentId] = useState("");
   const [program_id, setProgramId] = useState("");
+
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
   const navigate = useNavigate();
+
+  // fetch schools when page loads
+  useEffect(() => {
+    getSchools()
+      .then((res) => setSchools(res.data.schools))
+      .catch((err) => console.error(err));
+  }, []);
+
+  
+  useEffect(() => {
+    if (!school_id) return;
+    setDepartmentId("");
+    setProgramId("");
+    setDepartments([]);
+    setPrograms([]);
+    getDepartments(school_id)
+      .then((res) => setDepartments(res.data.departments))
+      .catch((err) => console.error(err));
+  }, [school_id]);
+
+  
+  useEffect(() => {
+    if (!department_id) return;
+    setProgramId("");
+    setPrograms([]);
+    getPrograms(department_id)
+      .then((res) => setPrograms(res.data.programs))
+      .catch((err) => console.error(err));
+  }, [department_id]);
 
   const handleRegister = async () => {
     setError("");
@@ -28,6 +65,11 @@ function Register() {
       return;
     }
 
+    if (!program_id) {
+      setError("Please select your program.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -37,22 +79,23 @@ function Register() {
         email,
         password,
         registration_number,
-        program_id: parseInt(program_id)
+        program_id: parseInt(program_id),
       });
 
       setSuccess(true);
       setTimeout(() => navigate("/"), 2000);
-
     } catch (err) {
-      setError(err.response?.data?.message || "Registration failed. Try again.");
+      setError(
+        err.response?.data?.message || "Registration failed. Try again."
+      );
     } finally {
       setLoading(false);
     }
-  }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4py-8">
-      <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md">
-        
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-8">
+      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-1">
           Create Account
         </h2>
@@ -112,13 +155,46 @@ function Register() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <input
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-6 focus:outline-none focus:border-gray-900"
-          type="number"
-          placeholder="Program ID (e.g. 1)"
+        <select
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-4 focus:outline-none focus:border-gray-900 bg-white"
+          value={school_id}
+          onChange={(e) => setSchoolId(e.target.value)}
+        >
+          <option value="">Select your school</option>
+          {schools.map((school) => (
+            <option key={school.id} value={school.id}>
+              {school.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-4 focus:outline-none focus:border-gray-900 bg-white"
+          value={department_id}
+          onChange={(e) => setDepartmentId(e.target.value)}
+          disabled={!school_id}
+        >
+          <option value="">Select your department</option>
+          {departments.map((dept) => (
+            <option key={dept.id} value={dept.id}>
+              {dept.name}
+            </option>
+          ))}
+        </select>
+
+        <select
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-6 focus:outline-none focus:border-gray-900 bg-white"
           value={program_id}
           onChange={(e) => setProgramId(e.target.value)}
-        />
+          disabled={!department_id}
+        >
+          <option value="">Select your program</option>
+          {programs.map((program) => (
+            <option key={program.id} value={program.id}>
+              {program.name}
+            </option>
+          ))}
+        </select>
 
         <button
           className="w-full py-3 bg-gray-900 text-white rounded-lg font-bold text-base hover:bg-gray-700 transition-all disabled:opacity-50"

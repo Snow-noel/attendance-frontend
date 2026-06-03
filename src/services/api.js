@@ -21,3 +21,6 @@ export const markAttendance = (data) => API.post("/attendance/mark", data);
 export const getStudentAttendance = () => API.get("/student/attendance");
 export const getSessionAttendance = (sessionId) => API.get(`/session/${sessionId}/attendance`);
 export const getModuleSessions = (moduleId) => API.get(`/module/${moduleId}/sessions`);
+export const getSchools = () => API.get("/schools");
+export const getDepartments = (schoolId) => API.get(`/departments/${schoolId}`);
+export const getPrograms = (departmentId) => API.get(`/programs/${departmentId}`);
