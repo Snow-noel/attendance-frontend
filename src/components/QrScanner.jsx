@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { markAttendance } from "../services/api";
 
-function QRScanner() {
+function QRScanner({onSuccess}) {
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -22,6 +22,7 @@ function QRScanner() {
         try {
           await markAttendance({ session_code: decodedText });
           setSuccess("Attendance marked successfully!");
+          if(onSuccess) onSuccess();
         } catch (err) {
           setError(err.response?.data?.message || "Failed to mark attendance.");
         }

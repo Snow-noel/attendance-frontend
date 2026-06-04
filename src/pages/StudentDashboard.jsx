@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback} from "react";
 import Navbar from "../components/Navbar";
 import QRScanner from "../components/QrScanner";
 import { getStudentAttendance } from "../services/api";
@@ -8,7 +8,9 @@ function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [showScanner, setShowScanner] = useState(false);
 
-  useEffect(() => {
+
+const fetchAttendance = useCallback(() => {
+    setLoading(true);
     getStudentAttendance()
       .then((res) => {
         setAttendance(res.data.attendance);
@@ -18,7 +20,10 @@ function StudentDashboard() {
         console.error(err);
         setLoading(false);
       });
-  }, []);
+}, []);
+useEffect(() => {
+    fetchAttendance();
+}, [fetchAttendance]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -26,7 +31,6 @@ function StudentDashboard() {
 
       <div className="max-w-3xl mx-auto px-4 py-8">
         
-        {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">My Attendance</h2>
           <button
@@ -37,14 +41,13 @@ function StudentDashboard() {
           </button>
         </div>
 
-        {/* QR Scanner */}
+    
         {showScanner && (
           <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
-            <QRScanner />
+            <QRScanner onSuccess={fetchAttendance}/>
           </div>
         )}
 
-        {/* Attendance Records */}
         <div className="bg-white rounded-2xl shadow-sm p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Attendance Records
