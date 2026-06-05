@@ -22,7 +22,9 @@ function QRScanner({onSuccess}) {
         try {
           await markAttendance({ session_code: decodedText });
           setSuccess("Attendance marked successfully!");
-          if(onSuccess) onSuccess();
+          if(onSuccess) {
+            onSuccess();
+          }
         } catch (err) {
           setError(err.response?.data?.message || "Failed to mark attendance.");
         }

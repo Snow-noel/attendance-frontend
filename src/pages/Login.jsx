@@ -23,7 +23,6 @@ function Login() {
         ? await studentLogin({ email, password })
         : await lecturerLogin({ email, password });
       const decoded = JSON.parse(atob(response.data.token.split(".")[1]));
-      console.log("decoded:", decoded);
       login({ 
         email: decoded.email, 
         role: decoded.role, 
