@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { studentLogin, lecturerLogin } from "../services/api";
+import { adminLogin } from "../services/api";
 
-function Login() {
-  const [role, setRole] = useState("student");
+function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -18,11 +17,9 @@ function Login() {
     setError("");
 
     try {
-      const response =
-        role === "student"
-          ? await studentLogin({ email, password })
-          : await lecturerLogin({ email, password });
+      const response = await adminLogin({ email, password });
       const decoded = JSON.parse(atob(response.data.token.split(".")[1]));
+
       login(
         {
           email: decoded.email,
@@ -33,50 +30,23 @@ function Login() {
         response.data.token,
       );
 
-      if (role === "student") {
-        navigate("/student/dashboard");
-      } else {
-        navigate("/lecturer/dashboard");
-      }
+      navigate("/admin/dashboard");
     } catch (err) {
-      setError(err.message || "Invalid email or password. Please try again.");
+      setError(err.response?.data?.message || "invalid password or email");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className=" p-2 min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 px-4">
+      <div className="bg-white p-8 rounded-3xl shadow-md max-w-md w-full">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-1">
-          Attendance System
+          Admin Portal
         </h2>
         <p className="text-center text-gray-500 text-sm mb-6">
-          Sign in to continue
+          Restricted access — authorized personnel only
         </p>
-
-        <div className="flex gap-3 mb-6">
-          <button
-            className={`flex-1 py-2 rounded-lg font-semibold transition-all ${
-              role === "student"
-                ? "bg-gray-900 text-white"
-                : "bg-white text-gray-900 border border-gray-900"
-            }`}
-            onClick={() => setRole("student")}
-          >
-            Student
-          </button>
-          <button
-            className={`flex-1 py-2 rounded-lg font-semibold transition-all ${
-              role === "lecturer"
-                ? "bg-gray-900 text-white"
-                : "bg-white text-gray-900 border border-gray-900"
-            }`}
-            onClick={() => setRole("lecturer")}
-          >
-            Lecturer
-          </button>
-        </div>
 
         {error && (
           <p className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-lg mb-4">
@@ -87,7 +57,7 @@ function Login() {
         <input
           className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-4 focus:outline-none focus:border-gray-900"
           type="email"
-          placeholder="Email address"
+          placeholder="Admin email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -107,18 +77,9 @@ function Login() {
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
-        <p className="text-center text-gray-500 text-sm mt-4">
-          Don't have an account?{" "}
-          <a
-            href="/register"
-            className="text-gray-900 font-semibold hover:underline"
-          >
-            Register here
-          </a>
-        </p>
       </div>
     </div>
   );
 }
 
-export default Login;
+export default AdminLogin;

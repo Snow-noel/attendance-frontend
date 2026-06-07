@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { studentRegister, getSchools, getDepartments, getPrograms } from "../services/api";
+import {
+  studentRegister,
+  getSchools,
+  getDepartments,
+  getPrograms,
+} from "../services/api";
 
 function Register() {
   const [first_name, setFirstName] = useState("");
@@ -29,19 +34,17 @@ function Register() {
       .catch((err) => console.error(err));
   }, []);
 
-  
   useEffect(() => {
     if (!school_id) return;
     setDepartmentId("");
     setProgramId("");
     setDepartments([]);
     setPrograms([]);
-    getDepartments(school_id)
-      .then((res) => setDepartments(res.data.departments))
-      .catch((err) => console.error(err));
+    getDepartments(school_id)((res) =>
+      setDepartments(res.data.departments),
+    ).catch((err) => console.error(err));
   }, [school_id]);
 
-  
   useEffect(() => {
     if (!department_id) return;
     setProgramId("");
@@ -85,7 +88,7 @@ function Register() {
       setTimeout(() => navigate("/"), 2000);
     } catch (err) {
       setError(
-        err.response?.data?.message || "Registration failed. Try again."
+        err.response?.data?.message || "Registration failed. Try again.",
       );
     } finally {
       setLoading(false);

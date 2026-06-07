@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback} from "react";
+import { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import QRScanner from "../components/QrScanner";
 import { getStudentAttendance } from "../services/api";
@@ -8,29 +8,32 @@ function StudentDashboard() {
   const [loading, setLoading] = useState(true);
   const [showScanner, setShowScanner] = useState(false);
 
-
-const fetchAttendance = useCallback(() => {
+  const fetchAttendance = useCallback(async () => {
     setLoading(true);
-    getStudentAttendance()
-      .then((res) => {
-        setAttendance(res.data.attendance);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-}, []);
-useEffect(() => {
-    fetchAttendance();
-}, [fetchAttendance]);
+
+    try {
+      const res = await getStudentAttendance();
+      setAttendance(res.data.attendance);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      fetchAttendance();
+    }, 0);
+
+    return () => clearTimeout(timeoutId);
+  }, [fetchAttendance]);
 
   return (
     <div className="min-h-screen bg-gray-100">
       <Navbar />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
-        
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">My Attendance</h2>
           <button
@@ -41,10 +44,9 @@ useEffect(() => {
           </button>
         </div>
 
-    
         {showScanner && (
           <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
-            <QRScanner onSuccess={fetchAttendance}/>
+            <QRScanner onSuccess={fetchAttendance} />
           </div>
         )}
 
