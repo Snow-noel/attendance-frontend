@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
-import { startSession } from "../services/api";
+import { startSession, endSession } from "../services/api";
 import { QRCodeSVG } from "qrcode.react";
 
 function LecturerDashboard() {
@@ -36,10 +36,8 @@ function LecturerDashboard() {
       setError("Please enter a module ID.");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
       const response = await startSession({ module_id: parseInt(moduleId) });
       setSession(response.data.session);
@@ -50,10 +48,19 @@ function LecturerDashboard() {
     }
   };
 
-  const handleEndSession = () => {
-    setSession(null);
-    setModuleId("");
-    setTimeLeft(null);
+  const handleEndSession = async () => {
+    try {
+      const response = await endSession(session.id);
+      alert(
+        `Session ended!\nPresent: ${response.data.totalPresent}\nAbsent: ${response.data.totalAbsent}`,
+      );
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSession(null);
+      setModuleId("");
+      setTimeLeft(null);
+    }
   };
 
   return (
@@ -135,9 +142,10 @@ function LecturerDashboard() {
                 {timeLeft !== null && (
                   <>
                     {String(Math.floor(timeLeft / 60000)).padStart(2, "0")}:
-                    {String(
-                      Math.floor((timeLeft % 60000) / 1000)
-                    ).padStart(2, "0")}
+                    {String(Math.floor((timeLeft % 60000) / 1000)).padStart(
+                      2,
+                      "0",
+                    )}
                   </>
                 )}
               </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import QRScanner from "../components/QrScanner";
-import { getStudentAttendance } from "../services/api";
+import { getStudentAttendance, getModuleSessions } from "../services/api";
 
 function StudentDashboard() {
   const [attendance, setAttendance] = useState([]);
@@ -13,6 +13,7 @@ function StudentDashboard() {
 
     try {
       const res = await getStudentAttendance();
+      //const session = await getModuleSessions();
       setAttendance(res.data.attendance);
     } catch (err) {
       console.error(err);

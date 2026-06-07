@@ -40,9 +40,9 @@ function Register() {
     setProgramId("");
     setDepartments([]);
     setPrograms([]);
-    getDepartments(school_id)((res) =>
-      setDepartments(res.data.departments),
-    ).catch((err) => console.error(err));
+    getDepartments(school_id)
+      .then((res) => setDepartments(res.data.departments))
+      .catch((err) => console.error(err));
   }, [school_id]);
 
   useEffect(() => {

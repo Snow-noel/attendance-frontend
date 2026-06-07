@@ -31,3 +31,4 @@ export const adminLogin = (data) => API.post("/admin/login", data);
 export const createLecturer = (data) => API.post("/lecturer/create", data);
 export const getAdminLecturers = () => API.get("/admin/lecturers");
 export const getAdminStudents = () => API.get("/admin/students");
+export const endSession = (sessionId) => API.post(`/session/${sessionId}/end`);

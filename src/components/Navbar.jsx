@@ -3,27 +3,30 @@ import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 
 function Navbar() {
-  const [imageUrl, setImageUrl] = useState(localStorage.getItem("profileImage") || null);
+  const { user, logout } = useAuth();
+  const profileKey = `profileImage_${user?.email}`;
+  const [imageUrl, setImageUrl] = useState(
+    localStorage.getItem(`profileImage_${user?.email}`) || null,
+  );
   const fileInputRef = useRef(null);
 
   const handleClickButton = () => {
     fileInputRef.current.click();
   };
 
-const handleFileChange = (event) => {
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            const base64 = reader.result;
-            setImageUrl(base64);
-            localStorage.setItem("profileImage", base64);
-        };
-        reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64 = reader.result;
+        setImageUrl(base64);
+        localStorage.setItem(profileKey, base64);
+      };
+      reader.readAsDataURL(file);
     }
-};
+  };
 
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -33,7 +36,6 @@ const handleFileChange = (event) => {
 
   return (
     <nav className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-      
       <div className="flex items-center gap-3">
         <input
           className="hidden"
