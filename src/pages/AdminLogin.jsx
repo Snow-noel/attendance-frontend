@@ -2,12 +2,14 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { adminLogin } from "../services/api";
+import { Eye, EyeOff } from "lucide-react";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowpassword] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -61,15 +63,22 @@ function AdminLogin() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-
-        <input
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-6 focus:outline-none focus:border-gray-900"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
+        <div className=" flex justify-between relative w-full mb-6">
+          <input
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-6 focus:outline-none focus:border-gray-900"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            className="absolute top-1/3 right-3 text-gray-500 hover:text-gray-900 -translate-y-1/2 focus:outline-non "
+            onMouseEnter={() => setShowpassword(!showPassword)}
+            onMouseLeave={() => setShowpassword(!showPassword)}
+          >
+            {showPassword ? <Eye size={18} /> : <EyeOff size={18} />}
+          </button>
+        </div>
         <button
           className="w-full py-3 bg-gray-900 text-white rounded-lg font-bold text-base hover:bg-gray-700 transition-all disabled:opacity-50"
           onClick={handleLogin}

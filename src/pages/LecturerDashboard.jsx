@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import { startSession, endSession } from "../services/api";
 import { QRCodeSVG } from "qrcode.react";
@@ -10,28 +10,7 @@ function LecturerDashboard() {
   const [error, setError] = useState("");
   const [timeLeft, setTimeLeft] = useState(null);
 
-  useEffect(() => {
-    if (!session) return;
-
-    const expiry = new Date(session.expires_at);
-    const remaining = expiry - new Date();
-    setTimeLeft(remaining);
-
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1000) {
-          clearInterval(interval);
-          handleEndSession();
-          return 0;
-        }
-        return prev - 1000;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [session]);
-
-  const handleStartSession = async () => {
+  const handleStartSession = useCallback(async () => {
     if (!moduleId) {
       setError("Please enter a module ID.");
       return;
@@ -46,22 +25,49 @@ function LecturerDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [moduleId]);
 
-  const handleEndSession = async () => {
-    try {
-      const response = await endSession(session.id);
-      alert(
-        `Session ended!\nPresent: ${response.data.totalPresent}\nAbsent: ${response.data.totalAbsent}`,
-      );
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSession(null);
-      setModuleId("");
-      setTimeLeft(null);
-    }
-  };
+  const handleEndSession = useCallback(
+    async (sessionId = session?.id) => {
+      if (!sessionId) return;
+      try {
+        const response = await endSession(sessionId);
+        alert(
+          `Session ended!\nPresent: ${response.data.totalPresent}\nAbsent: ${response.data.totalAbsent}`,
+        );
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setSession(null);
+        setModuleId("");
+        setTimeLeft(null);
+      }
+    },
+    [session],
+  );
+
+  useEffect(() => {
+    if (!session) return;
+
+    const sessionId = session.id; // capture id immediately
+
+    const expiry = new Date(session.expires_at);
+    const remaining = expiry - new Date();
+    setTimeLeft(remaining);
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1000) {
+          clearInterval(interval);
+          handleEndSession(sessionId); // pass id directly
+          return 0;
+        }
+        return prev - 1000;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [session]);
 
   return (
     <div className="min-h-screen bg-gray-100">

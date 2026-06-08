@@ -13,7 +13,7 @@ function StudentDashboard() {
 
     try {
       const res = await getStudentAttendance();
-      //const session = await getModuleSessions();
+
       setAttendance(res.data.attendance);
     } catch (err) {
       console.error(err);
@@ -23,11 +23,18 @@ function StudentDashboard() {
   }, []);
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
+    const id = setTimeout(() => {
       fetchAttendance();
     }, 0);
 
-    return () => clearTimeout(timeoutId);
+    const refreshInterval = setInterval(() => {
+      fetchAttendance();
+    }, 10000);
+
+    return () => {
+      clearTimeout(id);
+      clearInterval(refreshInterval);
+    };
   }, [fetchAttendance]);
 
   return (
@@ -79,8 +86,14 @@ function StudentDashboard() {
                       })}
                     </p>
                   </div>
-                  <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
-                    Present
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                      record.status === "absent"
+                        ? "bg-red-100 text-red-700"
+                        : "bg-green-100 text-green-700"
+                    }`}
+                  >
+                    {record.status === "absent" ? "Absent" : "Present"}
                   </span>
                 </div>
               ))}

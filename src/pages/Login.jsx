@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { studentLogin, lecturerLogin } from "../services/api";
+import { Eye, EyeOff } from "lucide-react";
 
 function Login() {
   const [role, setRole] = useState("student");
@@ -9,6 +10,8 @@ function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -39,7 +42,7 @@ function Login() {
         navigate("/lecturer/dashboard");
       }
     } catch (err) {
-      setError(err.message || "Invalid email or password. Please try again.");
+      setError("Invalid email or password. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -91,15 +94,22 @@ function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
-
-        <input
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-6 focus:outline-none focus:border-gray-900"
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
+        <div className="relative flex justify-space-between w-full rounded-lg mb-6">
+          <input
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-6 focus:outline-none focus:border-gray-900"
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <button
+            className="absolute right-3 top-1/3 transform -translate-y-1/2 text-gray-500 hover:text-gray-900 focus:outline-none"
+            onMouseEnter={() => setShowPassword(!showPassword)}
+            onMouseLeave={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
+        </div>
         <button
           className="w-full py-3 bg-gray-900 text-white rounded-lg font-bold text-base hover:bg-gray-700 transition-all disabled:opacity-50"
           onClick={handleLogin}
