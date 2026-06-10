@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import QRScanner from "../components/QrScanner";
-import { getStudentAttendance, getModuleSessions } from "../services/api";
+import { getStudentAttendance } from "../services/api";
 
 function StudentDashboard() {
   const [attendance, setAttendance] = useState([]);
@@ -27,13 +27,8 @@ function StudentDashboard() {
       fetchAttendance();
     }, 0);
 
-    const refreshInterval = setInterval(() => {
-      fetchAttendance();
-    }, 10000);
-
     return () => {
       clearTimeout(id);
-      clearInterval(refreshInterval);
     };
   }, [fetchAttendance]);
 

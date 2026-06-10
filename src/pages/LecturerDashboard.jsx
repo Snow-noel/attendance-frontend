@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { startSession, endSession } from "../services/api";
 import { QRCodeSVG } from "qrcode.react";
@@ -9,8 +9,49 @@ function LecturerDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [timeLeft, setTimeLeft] = useState(null);
+  const sessionRef = useRef(null);
 
-  const handleStartSession = useCallback(async () => {
+  useEffect(() => {
+    sessionRef.current = session;
+  }, [session]);
+
+  // countdown timer
+  useEffect(() => {
+    if (!session) return;
+
+    const expiry = new Date(session.expires_at);
+    const remaining = expiry - new Date();
+    setTimeLeft(remaining);
+
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1000) {
+          clearInterval(interval);
+          if (sessionRef.current) {
+            endSession(sessionRef.current.id)
+              .then((response) => {
+                alert(
+                  `Session ended!\nPresent: ${response.data.totalPresent}\nAbsent: ${response.data.totalAbsent}`,
+                );
+              })
+              .catch((err) => console.error(err))
+              .finally(() => {
+                setSession(null);
+                setModuleId("");
+                setTimeLeft(null);
+                sessionRef.current = null;
+              });
+          }
+          return 0;
+        }
+        return prev - 1000;
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [session]);
+
+  const handleStartSession = async () => {
     if (!moduleId) {
       setError("Please enter a module ID.");
       return;
@@ -25,49 +66,25 @@ function LecturerDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [moduleId]);
+  };
 
-  const handleEndSession = useCallback(
-    async (sessionId = session?.id) => {
-      if (!sessionId) return;
-      try {
-        const response = await endSession(sessionId);
-        alert(
-          `Session ended!\nPresent: ${response.data.totalPresent}\nAbsent: ${response.data.totalAbsent}`,
-        );
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setSession(null);
-        setModuleId("");
-        setTimeLeft(null);
-      }
-    },
-    [session],
-  );
-
-  useEffect(() => {
-    if (!session) return;
-
-    const sessionId = session.id; // capture id immediately
-
-    const expiry = new Date(session.expires_at);
-    const remaining = expiry - new Date();
-    setTimeLeft(remaining);
-
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1000) {
-          clearInterval(interval);
-          handleEndSession(sessionId); // pass id directly
-          return 0;
-        }
-        return prev - 1000;
-      });
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [session]);
+  const handleEndSession = async () => {
+    const sessionId = sessionRef.current?.id;
+    if (!sessionId) return;
+    try {
+      const response = await endSession(sessionId);
+      alert(
+        `Session ended!\nPresent: ${response.data.totalPresent}\nAbsent: ${response.data.totalAbsent}`,
+      );
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSession(null);
+      setModuleId("");
+      setTimeLeft(null);
+      sessionRef.current = null;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -141,9 +158,7 @@ function LecturerDashboard() {
               </p>
 
               <div
-                className={`text-4xl font-bold mt-3 ${
-                  timeLeft <= 60000 ? "text-red-600" : "text-gray-800"
-                }`}
+                className={`text-4xl font-bold mt-3 ${timeLeft <= 60000 ? "text-red-600" : "text-gray-800"}`}
               >
                 {timeLeft !== null && (
                   <>
