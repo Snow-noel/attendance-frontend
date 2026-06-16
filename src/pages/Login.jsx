@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { studentLogin, lecturerLogin } from "../services/api";
 import { Eye, EyeOff } from "lucide-react";
+import logoImg from "../assets/images/logo.jpg";
 
 function Login() {
   const [role, setRole] = useState("student");
@@ -49,11 +50,15 @@ function Login() {
   };
 
   return (
-    <div className=" p-2 min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-2xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-1">
-          Attendance System
-        </h2>
+    <div className=" p-2 h-full min-h-screen flex flex-col items-center justify-center bg-gray-800">
+      <div className="flex justify-between items-end w-full gap-4 mx-auto max-w-md ">
+        <img className="h-20 w-20 rounded-lg" src={logoImg} alt="Logo" />
+        <div className=" flex justify-center items-center bg-sky-600 px-4 py-4 rounded-t-md shadow-md">
+          <p className="font-bold text-center text-gray-400">SIGN IN</p>
+        </div>
+      </div>
+      <div className="bg-sky-900 h-1.5  rounded-lg"></div>
+      <div className="h-full bg-gray-500 p-8 rounded-b-2xl shadow-md w-full max-w-md">
         <p className="text-center text-gray-500 text-sm mb-6">
           Sign in to continue
         </p>
@@ -88,7 +93,7 @@ function Login() {
         )}
 
         <input
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-4 focus:outline-none focus:border-gray-900"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm text-white placeholder:text-gray-400 mb-4 focus:outline-none focus:border-gray-900"
           type="email"
           placeholder="Email address"
           value={email}
@@ -96,7 +101,7 @@ function Login() {
         />
         <div className="relative flex justify-space-between w-full rounded-lg mb-6">
           <input
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-6 focus:outline-none focus:border-gray-900"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm text-white placeholder:text-gray-400 mb-6 focus:outline-none focus:border-gray-900"
             type={showPassword ? "text" : "password"}
             placeholder="Password"
             value={password}
@@ -117,7 +122,7 @@ function Login() {
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
-        <p className="text-center text-gray-500 text-sm mt-4">
+        <p className="text-center text-gray-100 text-sm mt-4">
           Don't have an account?{" "}
           <a
             href="/register"
