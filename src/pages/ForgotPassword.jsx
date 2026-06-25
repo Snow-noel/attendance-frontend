@@ -59,21 +59,12 @@ function ForgotPassword() {
         >
           Reset
         </button>
-                  <span
-            className="text-gray-900 font-semibold cursor-pointer hover:underline"
-            onClick={() => navigate("/")}
-          >
-            Sign in
-          </span>
-        </p>
-      </div>
-    </div>
-  );
-Save and tell me when done.
-
-
-
-
+        <span
+          className="text-gray-900 font-semibold cursor-pointer hover:underline"
+          onClick={() => navigate("/")}
+        >
+          Sign in
+        </span>
       </div>
     </div>
   );
