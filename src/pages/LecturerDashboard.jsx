@@ -15,7 +15,6 @@ function LecturerDashboard() {
     sessionRef.current = session;
   }, [session]);
 
-  // countdown timer
   useEffect(() => {
     if (!session) return;
 
