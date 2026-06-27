@@ -34,3 +34,4 @@ export const getAdminLecturers = () => API.get("/admin/lecturers");
 export const getAdminStudents = () => API.get("/admin/students");
 export const endSession = (sessionId) => API.post(`/session/${sessionId}/end`);
 export const forgotPassword = (data) => API.post("/forgot-password", data);
+export const resetPassword = (data) => API.post("/reset/password", data);
