@@ -1,16 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { forgotPassword } from "../services/api";
-
+import backGroundImg from "../assets/images/attendance.jpg";
 function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [loding, setLoding] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        setSuccess(false);
+      }, 2000);
+    }
+  }, [success]);
+  const navigate = useNavigate();
   const handleSubmit = async () => {
     try {
-      setLoding(true);
+      setLoading(true);
       await forgotPassword({ email });
 
       setSuccess(true);
@@ -19,18 +27,21 @@ function ForgotPassword() {
         err.response?.data?.message || "Something went wrong. Try again.",
       );
     } finally {
-      setLoding(false);
+      setLoading(false);
     }
   };
 
   return (
-    <div className="h-screen bg-gray-900 rounded-lg w-full flex flex-col justify-center items-center">
-      <div className="w-full bg-white mx-w-md shadow-md p-8">
-        <h2 className="text-2xl font-bold text-center mb-2 text-gray-900">
+    <div
+      className="h-screen bg-cover bg-center rounded-lg w-full flex justify-center items-center p-10"
+      style={{ backgroundImage: `url(${backGroundImg})` }}
+    >
+      <div className="flex flex-col items-center gap-2 w-full bg-gray-500 md:w-1/2 shadow-md p-8 rounded-lg">
+        <h2 className="text-2xl font-bold text-center mb-2 text-gray-100">
           Reset Your password Here
         </h2>
 
-        <p className="text-center text-gray-500 text-sm mb-6">
+        <p className="text-center text-gray-100 text-lg mb-6">
           Use your university email to reset your password.
         </p>
 
@@ -47,7 +58,7 @@ function ForgotPassword() {
         )}
 
         <input
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-4 focus:outline-none focus:border-gray-900"
+          className="w-full px-4 py-3 border border-gray-100 rounded-lg text-gray-100 text-sm mb-4 focus:outline-none focus:border-gray-900"
           placeholder="email"
           type="email"
           value={email}
@@ -55,12 +66,16 @@ function ForgotPassword() {
         />
         <button
           className="w-20 h-10 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all disabled:opacity-50"
-          onClick={handleSubmit}
+          onClick={() => {
+            handleSubmit();
+            setEmail("");
+          }}
+          disabled={loading}
         >
           Reset
         </button>
         <span
-          className="text-gray-900 font-semibold cursor-pointer hover:underline"
+          className=" self-end text-gray-100 font-semibold cursor-pointer hover:underline"
           onClick={() => navigate("/")}
         >
           Sign in

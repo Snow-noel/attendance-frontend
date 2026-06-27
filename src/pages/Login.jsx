@@ -5,6 +5,7 @@ import { studentLogin, lecturerLogin } from "../services/api";
 import { Eye, EyeOff } from "lucide-react";
 import logoImg from "../assets/images/logo.jpg";
 import backGroundImg from "../assets/images/attendance.jpg";
+import { forgotPassword } from "../services/api";
 
 function Login() {
   const [role, setRole] = useState("student");
@@ -41,7 +42,10 @@ function Login() {
         navigate("/lecturer/dashboard");
       }
     } catch (err) {
-      setError("Invalid email or password. Please try again.");
+      setError(
+        err.response?.data?.message ||
+          "Invalid email or password. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -103,22 +107,34 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
           />
 
-          <div className="relative w-full mb-6">
+          <div className="relative w-full mb-1">
             <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-900"
+              className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg text-sm text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-900 bg-transparent"
               type={showPassword ? "text" : "password"}
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
-
             <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-white focus:outline-none"
-              onMouseEnter={() => setShowPassword(true)}
-              onMouseLeave={() => setShowPassword(false)}
+              type="button"
+              className="absolute inset-y-0 right-3 flex items-center text-gray-300 hover:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              onClick={(e) => {
+                e.preventDefault();
+                setShowPassword(!showPassword);
+              }}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              tabIndex={0}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
+          </div>
+          <div className="text-right mb-6">
+            <a
+              className="text-sm text-gray-300 hover:text-white hover:underline"
+              href="/forgot-password"
+            >
+              forgot password?
+            </a>
           </div>
 
           <button
