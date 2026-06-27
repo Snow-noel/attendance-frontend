@@ -5,7 +5,6 @@ import { studentLogin, lecturerLogin } from "../services/api";
 import { Eye, EyeOff } from "lucide-react";
 import logoImg from "../assets/images/logo.jpg";
 import backGroundImg from "../assets/images/attendance.jpg";
-import { forgotPassword } from "../services/api";
 
 function Login() {
   const [role, setRole] = useState("student");

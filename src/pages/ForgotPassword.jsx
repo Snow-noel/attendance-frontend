@@ -10,7 +10,7 @@ function ForgotPassword() {
 
   useEffect(() => {
     if (success) {
-      const timer = setTimeout(() => {
+      setTimeout(() => {
         setSuccess(false);
       }, 2000);
     }
