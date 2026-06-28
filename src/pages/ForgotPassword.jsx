@@ -18,14 +18,23 @@ function ForgotPassword() {
   const navigate = useNavigate();
   const handleSubmit = async () => {
     try {
+      const validateEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      if (!validateEmail.test(email)) {
+        return setError(
+          "Please enter a valid email address (e.g., name@mubas.ac.mw).",
+        );
+      }
+      if (!email.endsWith("@mubas.ac.mw")) {
+        setError("You must use your university email (@mubas.ac.mw)");
+        return;
+      }
+
       setLoading(true);
       await forgotPassword({ email });
 
       setSuccess(true);
     } catch (err) {
-      setError(
-        err.response?.data?.message || "Something went wrong. Try again.",
-      );
+      setError(err.response?.data?.message || { error });
     } finally {
       setLoading(false);
     }
@@ -33,12 +42,12 @@ function ForgotPassword() {
 
   return (
     <div
-      className="h-screen bg-cover bg-center rounded-lg w-full flex justify-center items-center p-10"
+      className="h-screen bg-cover bg-center rounded-lg w-full flex justify-center items-center p-8"
       style={{ backgroundImage: `url(${backGroundImg})` }}
     >
-      <div className="flex flex-col items-center gap-2 w-full bg-gray-500 md:w-1/2 shadow-md p-8 rounded-lg">
+      <div className="flex flex-col items-center gap-4 w-full bg-gray-500 md:w-1/2 shadow-md p-2 rounded-lg">
         <h2 className="text-2xl font-bold text-center mb-2 text-gray-100">
-          Reset Your password Here
+          Password Recovery
         </h2>
 
         <p className="text-center text-gray-100 text-lg mb-6">
@@ -58,10 +67,11 @@ function ForgotPassword() {
         )}
 
         <input
-          className="w-full px-4 py-3 border border-gray-100 rounded-lg text-gray-100 text-sm mb-4 focus:outline-none focus:border-gray-900"
+          className="w-full md:w-3/4 px-4 py-3 border border-gray-100 rounded-lg text-gray-100 text-sm mb-4 focus:outline-none focus:border-gray-900"
           placeholder="email"
           type="email"
           value={email}
+          required
           onChange={(e) => setEmail(e.target.value)}
         />
         <button
@@ -75,10 +85,10 @@ function ForgotPassword() {
           Reset
         </button>
         <span
-          className=" self-end text-gray-100 font-semibold cursor-pointer hover:underline"
+          className="text-gray-100 font-semibold cursor-pointer hover:underline"
           onClick={() => navigate("/")}
         >
-          Sign in
+          Sign in!
         </span>
       </div>
     </div>
