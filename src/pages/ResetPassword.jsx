@@ -18,14 +18,26 @@ export default function ResetPassword() {
   const handleChangePassword = async () => {
     try {
       setLoading(true);
+      if (!newPassword) {
+        setError("password should not be empty");
+        return;
+      }
       if (newPassword !== confirmPassword) {
         setError("password do not match");
+        setNewPassword("");
+        setConfirmPassword("");
+        return;
+      }
+      if (newPassword.length < 6) {
+        setError("password must be at least 6 characters long");
         return;
       }
       await resetPassword({ newPassword, token });
       setSuccess(true);
+      setNewPassword("");
+      setConfirmPassword("");
       setTimeout(() => {
-        navigate(`http://localhost:5173/reset/password?token=${token}`);
+        navigate("/");
       }, 2000);
     } catch (err) {
       setError(
@@ -42,9 +54,6 @@ export default function ResetPassword() {
       style={{ backgroundImage: `url(${backGroundImg})` }}
     >
       <div className="w-full max-w-md bg-gray-500 rounded-lg flex flex-col gap-2 items-center p-8 shadow-md ">
-        <h2 className="text-2xl font-bold text-center text-gray-100">
-          Make a New password that you will remember
-        </h2>
         {success && (
           <div className="bg-green-50 text-green-700 p-3 rounded-lg text-sm text-center mb-4">
             Password changes successifully. Make sure you dont share with anyone
@@ -55,6 +64,10 @@ export default function ResetPassword() {
             {error}
           </div>
         )}
+        <h2 className="text-2xl font-bold text-center text-gray-100">
+          Make a New password that you will remember
+        </h2>
+
         <div className="w-full relative mb-1">
           <input
             className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg text-sm text-white placeholder:text-gray-400 focus:outline-none focus:border-gray-900 bg-transparent"
@@ -90,11 +103,7 @@ export default function ResetPassword() {
           className="p-3 bg-green-500 text-white rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all disabled:opacity-50"
           type="button"
           disabled={loading}
-          onClick={() => {
-            handleChangePassword;
-            setNewPassword("");
-            setConfirmPassword("");
-          }}
+          onClick={handleChangePassword}
         >
           {loading ? "Changing..." : "Change Password"}
         </button>
