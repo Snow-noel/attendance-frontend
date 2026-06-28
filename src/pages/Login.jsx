@@ -56,10 +56,11 @@ function Login() {
       style={{ backgroundImage: `url(${backGroundImg})` }}
     >
       <div className="w-full max-w-md">
-        <div className="flex justify-between">
-          <div className="flex justify-center items-center bg-sky-600 px-4 py-3 border-none rounded-t-md shadow-md">
+        <div className=" w-full flex flex-col">
+          <div className="w-20 flex justify-center items-center bg-gray-900 py-3 border-none rounded-t-md shadow-md">
             <p className="font-bold text-sm text-white">SIGN IN</p>
           </div>
+          <div className="bg-gray-900 h-1.5 w-full"></div>
         </div>
 
         <div className="bg-gray-500 p-3 rounded-b-2xl shadow-md w-full">
