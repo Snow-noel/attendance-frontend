@@ -1,7 +1,7 @@
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
 
 function Navbar() {
   const { user, logout } = useAuth();
@@ -10,6 +10,7 @@ function Navbar() {
     localStorage.getItem(`profileImage_${user?.email}`) || null,
   );
   const [openMenu, setOpenMenu] = useState(false);
+  const [mode, setMode] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleClickButton = () => {
@@ -37,7 +38,9 @@ function Navbar() {
 
   return (
     <div className="relative">
-      <nav className="bg-gray-900 text-white px-6 py-4 flex justify-between items-center sticky top-0 z-10">
+      <nav
+        className={` px-6 py-4 flex justify-between items-center sticky top-0 z-10 ${mode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"}`}
+      >
         <div className="flex items-center gap-3">
           <input
             className="hidden"
@@ -69,6 +72,13 @@ function Navbar() {
           <span className="text-white text-sm">
             {user?.first_name} {user?.last_name}
           </span>
+          <button
+            onClick={() => {
+              setMode(!mode);
+            }}
+          >
+            {mode ? <Sun size={20}></Sun> : <Moon size={20}></Moon>}
+          </button>
           <button
             className="px-4 py-1.5 border border-white rounded-lg text-sm hover:bg-white hover:text-gray-900 transition-all"
             onClick={handleLogout}
