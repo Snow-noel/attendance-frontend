@@ -33,7 +33,7 @@ function StudentDashboard() {
   }, [fetchAttendance]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className={`min-h-screen bg-gray-100`}>
       <Navbar />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
