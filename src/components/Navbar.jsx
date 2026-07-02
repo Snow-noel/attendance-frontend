@@ -39,7 +39,7 @@ function Navbar() {
   return (
     <div className="relative">
       <nav
-        className={` px-6 py-4 flex justify-between items-center sticky top-0 z-10 ${mode ? "bg-gray-800 text-gray-200" : "bg-gray-200 text-gray-800"}`}
+        className={` px-6 py-4 flex justify-between items-center sticky top-0 z-10 ${mode ? "bg-black text-gray-400" : "bg-gray-200 text-gray-800"}`}
       >
         <div className="flex items-center gap-3">
           <input
@@ -69,10 +69,13 @@ function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <span className="text-white text-sm">
+          <span
+            className={`${mode ? "text-gray-400" : "text-gray-900"} text-sm`}
+          >
             {user?.first_name} {user?.last_name}
           </span>
           <button
+            className={`border h-9 w-9 rounded-full flex items-center justify-center ${mode ? "border-gray-600 text-gray-100" : "border-gray-800 text-gray-800"}`}
             onClick={() => {
               setMode(!mode);
             }}
@@ -80,20 +83,30 @@ function Navbar() {
             {mode ? <Sun size={20}></Sun> : <Moon size={20}></Moon>}
           </button>
           <button
-            className="px-4 py-1.5 border border-white rounded-lg text-sm hover:bg-white hover:text-gray-900 transition-all"
+            className={`px-4 py-1.5 text-sm rounded-lg border transition-all ${mode ? "hover:bg-gray-100 hover:text-gray-900 border-gray-100" : "hover:bg-gray-900 hover:text-gray-100 border-gray-800"}`}
             onClick={handleLogout}
           >
             Logout
           </button>
         </div>
-        <button
-          className="flex md:hidden"
-          onClick={() => {
-            setOpenMenu(!openMenu);
-          }}
-        >
-          <Menu size={20}></Menu>
-        </button>
+        <div className="flex md:hidden items-center justify-center gap-4">
+          <button
+            className={`border h-9 w-9 rounded-full flex items-center justify-center ${mode ? "border-gray-600 text-gray-400" : "border-gray-800 text-gray-800"}`}
+            onClick={() => {
+              setMode(!mode);
+            }}
+          >
+            {mode ? <Sun size={20}></Sun> : <Moon size={20}></Moon>}
+          </button>
+          <button
+            className="flex md:hidden"
+            onClick={() => {
+              setOpenMenu(!openMenu);
+            }}
+          >
+            <Menu size={30}></Menu>
+          </button>
+        </div>
       </nav>
       {openMenu && (
         <div className="absolute top-2  right-0 w-1/2 bg-gray-900 rounded-sm flex md:hidden flex-col gap-2 p-4 z-10">
@@ -103,10 +116,9 @@ function Navbar() {
               setOpenMenu(!openMenu);
             }}
           >
-            <X size={20}></X>
+            <X size={25}></X>
           </button>
-
-          <span className="text-white text-sm">
+          <span className={`text-gray-100 text-sm`}>
             {user?.first_name} {user?.last_name}
           </span>
           <button
