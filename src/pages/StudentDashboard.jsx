@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import QRScanner from "../components/QrScanner";
 import { getStudentAttendance } from "../services/api";
+import { useTheme } from "../context/ThemeContext";
 
 function StudentDashboard() {
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showScanner, setShowScanner] = useState(false);
 
+  const { mode } = useTheme();
   const fetchAttendance = useCallback(async () => {
     setLoading(true);
 
@@ -33,14 +35,16 @@ function StudentDashboard() {
   }, [fetchAttendance]);
 
   return (
-    <div className={`min-h-screen bg-gray-100`}>
+    <div
+      className={`min-h-screen ${mode ? "bg-black text-gray-400" : "bg-gray-100 text-gray-800"} `}
+    >
       <Navbar />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">My Attendance</h2>
           <button
-            className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-700 transition-all"
+            className={`px-4 py-2 rounded-lg text-sm font-semibold ${mode ? "border border-gray-100 text-gray-500 hover:bg-white" : "text-gray-700 border border-gray-100 hover:bg-gray-700"} transition-all`}
             onClick={() => setShowScanner(!showScanner)}
           >
             {showScanner ? "Hide Scanner" : "Scan QR Code"}
@@ -48,12 +52,16 @@ function StudentDashboard() {
         </div>
 
         {showScanner && (
-          <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+          <div
+            className={`${mode ? "bg-gray-800" : "bg-white"} rounded-2xl shadow-sm p-6 mb-6`}
+          >
             <QRScanner onSuccess={fetchAttendance} />
           </div>
         )}
 
-        <div className="bg-white rounded-2xl shadow-sm p-6">
+        <div
+          className={`${mode ? "bg-gray-800" : "bg-white"} rounded-2xl shadow-sm p-6`}
+        >
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Attendance Records
           </h3>
@@ -69,7 +77,7 @@ function StudentDashboard() {
               {attendance.map((record, index) => (
                 <div
                   key={index}
-                  className="flex justify-between items-center p-4 bg-gray-50 rounded-xl"
+                  className={`${mode ? "bg-gray-600" : "bg-gray-50"} flex justify-between items-center rounded-xl p-4`}
                 >
                   <div>
                     <p className="font-semibold text-gray-800">
