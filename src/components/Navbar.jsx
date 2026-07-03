@@ -2,15 +2,17 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useState, useRef } from "react";
 import { Menu, X, Moon, Sun } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 function Navbar() {
   const { user, logout } = useAuth();
+  const { mode, changeMode } = useTheme();
+  console.log(mode);
   const profileKey = `profileImage_${user?.email}`;
   const [imageUrl, setImageUrl] = useState(
     localStorage.getItem(`profileImage_${user?.email}`) || null,
   );
   const [openMenu, setOpenMenu] = useState(false);
-  const [mode, setMode] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleClickButton = () => {
@@ -77,7 +79,7 @@ function Navbar() {
           <button
             className={`border h-9 w-9 rounded-full flex items-center justify-center ${mode ? "border-gray-600 text-gray-100" : "border-gray-800 text-gray-800"}`}
             onClick={() => {
-              setMode(!mode);
+              changeMode();
             }}
           >
             {mode ? <Sun size={20}></Sun> : <Moon size={20}></Moon>}
@@ -93,7 +95,7 @@ function Navbar() {
           <button
             className={`border h-9 w-9 rounded-full flex items-center justify-center ${mode ? "border-gray-600 text-gray-400" : "border-gray-800 text-gray-800"}`}
             onClick={() => {
-              setMode(!mode);
+              changeMode();
             }}
           >
             {mode ? <Sun size={20}></Sun> : <Moon size={20}></Moon>}
