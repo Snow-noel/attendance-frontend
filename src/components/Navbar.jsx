@@ -41,7 +41,7 @@ function Navbar() {
   return (
     <div className="relative">
       <nav
-        className={` px-6 py-4 flex justify-between items-center sticky top-0 z-10 ${mode ? "bg-black text-gray-400" : "bg-gray-200 text-gray-800"}`}
+        className={` px-6 py-4 flex justify-between items-center sticky top-0 z-10 ${mode ? "bg-gray-800 text-gray-400" : "bg-gray-200 text-gray-800"}`}
       >
         <div className="flex items-center gap-3">
           <input
