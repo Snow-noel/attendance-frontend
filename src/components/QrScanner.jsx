@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { markAttendance } from "../services/api";
-
-function QRScanner({onSuccess}) {
+import { useTheme } from "../context/ThemeContext";
+function QRScanner({ onSuccess }) {
+  const { mode } = useTheme();
   const [result, setResult] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -22,7 +23,7 @@ function QRScanner({onSuccess}) {
         try {
           await markAttendance({ session_code: decodedText });
           setSuccess("Attendance marked successfully!");
-          if(onSuccess) {
+          if (onSuccess) {
             onSuccess();
           }
         } catch (err) {
@@ -31,7 +32,7 @@ function QRScanner({onSuccess}) {
       },
       (errorMessage) => {
         console.log(errorMessage);
-      }
+      },
     );
 
     scannerRef.current = scanner;
@@ -42,52 +43,18 @@ function QRScanner({onSuccess}) {
   }, []);
 
   return (
-    <div style={styles.container}>
-      <h3 style={styles.title}>Scan QR Code</h3>
-      <p style={styles.sub}>Point your camera at the lecturer's QR code</p>
+    <div
+      className={`p-1.5 rounded-lg shadow-md mt-1.5 ${mode ? "bg-gray-900" : "bg-gray-100"}`}
+    >
+      <h3>Scan QR Code</h3>
+      <p>Point your camera at the lecturer's QR code</p>
 
-      {success && <p style={styles.success}>{success}</p>}
-      {error && <p style={styles.error}>{error}</p>}
+      {success && <p>{success}</p>}
+      {error && <p>{error}</p>}
 
-      {!success && <div id="qr-reader" style={styles.scanner}></div>}
+      {!success && <div id="qr-reader"></div>}
     </div>
   );
 }
-
-const styles = {
-  container: {
-    backgroundColor: "white",
-    padding: "1.5rem",
-    borderRadius: "10px",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
-    marginTop: "1.5rem",
-  },
-  title: {
-    margin: "0 0 0.5rem",
-    color: "#1a1a2e",
-  },
-  sub: {
-    color: "#888",
-    fontSize: "13px",
-    marginBottom: "1rem",
-  },
-  scanner: {
-    width: "100%",
-  },
-  success: {
-    backgroundColor: "#e6f4ea",
-    color: "#2e7d32",
-    padding: "10px",
-    borderRadius: "8px",
-    marginBottom: "1rem",
-  },
-  error: {
-    backgroundColor: "#fdecea",
-    color: "#c62828",
-    padding: "10px",
-    borderRadius: "8px",
-    marginBottom: "1rem",
-  },
-};
 
 export default QRScanner;
