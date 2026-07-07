@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { startSession, endSession } from "../services/api";
 import { QRCodeSVG } from "qrcode.react";
+import { useTheme } from "../context/ThemeContext";
 
 function LecturerDashboard() {
   const [moduleId, setModuleId] = useState("");
@@ -10,6 +11,7 @@ function LecturerDashboard() {
   const [error, setError] = useState("");
   const [timeLeft, setTimeLeft] = useState(null);
   const sessionRef = useRef(null);
+  const { mode } = useTheme();
 
   useEffect(() => {
     sessionRef.current = session;
@@ -86,16 +88,18 @@ function LecturerDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div
+      className={`min-h-screen ${mode ? "bg-gray-900 text-gray-400" : "bg-gray-100 text-gray-800"}`}
+    >
       <Navbar />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">
-          Lecturer Dashboard
-        </h2>
+        <h2 className="text-2xl font-bold mb-6">Lecturer Dashboard</h2>
 
         {!session ? (
-          <div className="bg-white rounded-2xl shadow-sm p-6">
+          <div
+            className={`${mode ? "bg-gray-800" : "bg-white"} rounded-2xl shadow-sm p-6`}
+          >
             <h3 className="text-lg font-semibold text-gray-800 mb-1">
               Start a Class Session
             </h3>
@@ -104,7 +108,9 @@ function LecturerDashboard() {
             </p>
 
             {error && (
-              <p className="text-red-600 text-sm bg-red-50 p-3 rounded-lg mb-4">
+              <p
+                className={`${mode ? "text-red-600 bg-red-100" : "text-red-600 bg-red-100"} text-sm p-3 rounded-lg mb-4`}
+              >
                 {error}
               </p>
             )}
