@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
-// import Navbar from "./components/Navbar";
 import StudentDashboard from "./pages/StudentDashboard";
 import LecturerDashboard from "./pages/LecturerDashboard";
 import Register from "./pages/Register";
