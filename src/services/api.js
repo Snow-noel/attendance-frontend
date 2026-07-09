@@ -19,7 +19,8 @@ export const lecturerRegister = (data) => API.post("/lecturer/register", data);
 export const lecturerLogin = (data) => API.post("/lecturer/login", data);
 export const startSession = (data) => API.post("/session/start", data);
 export const markAttendance = (data) => API.post("/attendance/mark", data);
-export const getStudentAttendance = (moduleId) =>
+export const getStudentModules = () => API.get("/student/modules");
+export const getStudentModuleAttendance = (moduleId) =>
   API.get(`/student/attendance/${moduleId}`);
 export const getSessionAttendance = (sessionId) =>
   API.get(`/session/${sessionId}/attendance`);
