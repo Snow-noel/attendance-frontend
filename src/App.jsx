@@ -7,6 +7,8 @@ import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import ModuleAttendance from "./pages/ModuleAttendance";
+
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +21,10 @@ function App() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route
+          path="/student/modules/:moduleId"
+          element={<ModuleAttendance />}
+        />
       </Routes>
     </BrowserRouter>
   );
