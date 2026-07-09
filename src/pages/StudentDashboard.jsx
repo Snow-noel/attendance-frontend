@@ -1,22 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
 import Navbar from "../components/Navbar";
 import QRScanner from "../components/QrScanner";
-import { getStudentAttendance } from "../services/api";
-import { useTheme } from "../context/ThemeContext";
+import { getStudentModules } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 function StudentDashboard() {
-  const [attendance, setAttendance] = useState([]);
+  const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showScanner, setShowScanner] = useState(false);
+  const navigate = useNavigate();
 
-  const { mode } = useTheme();
-  const fetchAttendance = useCallback(async () => {
+  const fetchModules = useCallback(async () => {
     setLoading(true);
-
     try {
-      const res = await getStudentAttendance();
-
-      setAttendance(res.data.attendance);
+      const res = await getStudentModules();
+      setModules(res.data.modules);
     } catch (err) {
       console.error(err);
     } finally {
@@ -26,25 +24,20 @@ function StudentDashboard() {
 
   useEffect(() => {
     const id = setTimeout(() => {
-      fetchAttendance();
+      fetchModules();
     }, 0);
-
-    return () => {
-      clearTimeout(id);
-    };
-  }, [fetchAttendance]);
+    return () => clearTimeout(id);
+  }, [fetchModules]);
 
   return (
-    <div
-      className={`min-h-screen ${mode ? "bg-black text-gray-400" : "bg-gray-100 text-gray-800"} `}
-    >
+    <div className="min-h-screen bg-gray-100">
       <Navbar />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">My Attendance</h2>
+          <h2 className="text-2xl font-bold text-gray-800">My Modules</h2>
           <button
-            className={`px-4 py-2 rounded-lg text-sm font-semibold ${mode ? "border border-gray-100 text-gray-500 hover:bg-white" : "text-gray-700 border border-gray-100 hover:bg-gray-700"} transition-all`}
+            className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-semibold hover:bg-gray-700 transition-all"
             onClick={() => setShowScanner(!showScanner)}
           >
             {showScanner ? "Hide Scanner" : "Scan QR Code"}
@@ -52,52 +45,46 @@ function StudentDashboard() {
         </div>
 
         {showScanner && (
-          <div
-            className={`${mode ? "bg-gray-800" : "bg-white"} rounded-2xl shadow-sm p-6 mb-6`}
-          >
-            <QRScanner onSuccess={fetchAttendance} />
+          <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+            <QRScanner onSuccess={fetchModules} />
           </div>
         )}
 
-        <div
-          className={`${mode ? "bg-gray-800" : "bg-white"} rounded-2xl shadow-sm p-6`}
-        >
+        <div className="bg-white rounded-2xl shadow-sm p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            Attendance Records
+            Attendance by Module
           </h3>
 
           {loading ? (
             <p className="text-gray-400 text-center py-8">Loading...</p>
-          ) : attendance.length === 0 ? (
-            <p className="text-gray-400 text-center py-8">
-              No attendance records found.
-            </p>
+          ) : modules.length === 0 ? (
+            <p className="text-gray-400 text-center py-8">No modules found.</p>
           ) : (
             <div className="space-y-3">
-              {attendance.map((record, index) => (
+              {modules.map((module) => (
                 <div
-                  key={index}
-                  className={`${mode ? "bg-gray-600" : "bg-gray-50"} flex justify-between items-center rounded-xl p-4`}
+                  key={module.id}
+                  className="flex flex-col justify-between items-start gap-2 p-2 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-all md:flex-row"
+                  onClick={() => navigate(`/student/modules/${module.id}`)}
                 >
                   <div>
                     <p className="font-semibold text-gray-800">
-                      {record.module_name}
+                      {module.module_name}
                     </p>
-                    <p className="text-sm text-gray-400">
-                      {new Date(record.marked_at).toLocaleDateString("en-MW", {
-                        timeZone: "Africa/Blantyre",
-                      })}
-                    </p>
+                    {module.total_sessions < 2 ? (
+                      <p>{module.total_sessions} session</p>
+                    ) : (
+                      <p>{module.total_sessions} sessions</p>
+                    )}
                   </div>
-                  <span
-                    className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                      record.status === "absent"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-green-100 text-green-700"
-                    }`}
-                  >
-                    {record.status === "absent" ? "Absent" : "Present"}
-                  </span>
+                  <div className="flex gap-2">
+                    <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">
+                      {module.total_present} present
+                    </span>
+                    <span className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">
+                      {module.total_absent} absent
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
