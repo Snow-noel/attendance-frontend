@@ -7,7 +7,6 @@ import { useTheme } from "../context/ThemeContext";
 function Navbar() {
   const { user, logout } = useAuth();
   const { mode, changeMode } = useTheme();
-  console.log(mode);
   const profileKey = `profileImage_${user?.email}`;
   const [imageUrl, setImageUrl] = useState(
     localStorage.getItem(`profileImage_${user?.email}`) || null,
