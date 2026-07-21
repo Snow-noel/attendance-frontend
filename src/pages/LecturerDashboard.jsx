@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Navbar from "../components/Navbar";
-import { startSession, endSession } from "../services/api";
+import { startSession, endSession, getLecturerModules } from "../services/api";
 import { QRCodeSVG } from "qrcode.react";
 import { useTheme } from "../context/ThemeContext";
 
@@ -10,8 +10,30 @@ function LecturerDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [timeLeft, setTimeLeft] = useState(null);
+  const [modules, setModules] = useState("");
   const sessionRef = useRef(null);
   const { mode } = useTheme();
+
+  const fetchLecturerModules = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await getLecturerModules();
+      setModules(res.data.modules);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      fetchLecturerModules();
+    }, 0);
+    return () => {
+      clearTimeout(id);
+    };
+  }, [fetchLecturerModules]);
 
   useEffect(() => {
     sessionRef.current = session;
