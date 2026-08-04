@@ -10,7 +10,7 @@ function LecturerDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [timeLeft, setTimeLeft] = useState(null);
-  const [modules, setModules] = useState("");
+  const [modules, setModules] = useState([]);
   const sessionRef = useRef(null);
   const { mode } = useTheme();
 
@@ -137,13 +137,20 @@ function LecturerDashboard() {
               </p>
             )}
 
-            <input
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-4 focus:outline-none focus:border-gray-900"
-              type="number"
-              placeholder="Module ID (e.g. 1)"
+            <select
+              className={`w-full px-4 py-3 border border-gray-300 rounded-lg text-sm mb-4 focus:outline-none focus:border-gray-900 ${mode ? "bg-gray-600 border-gray-600" : "bg-gray-100"} `}
               value={moduleId}
-              onChange={(e) => setModuleId(e.target.value)}
-            />
+              onChange={(e) => {
+                setModuleId(e.target.value);
+              }}
+            >
+              <option value="">Select your module</option>
+              {modules.map((module) => (
+                <option key={module.id} value={module.id}>
+                  {module.name}
+                </option>
+              ))}
+            </select>
 
             <button
               className="w-full py-3 bg-gray-900 text-white rounded-lg font-bold hover:bg-gray-700 transition-all disabled:opacity-50"
