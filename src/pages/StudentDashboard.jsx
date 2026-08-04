@@ -48,7 +48,9 @@ function StudentDashboard() {
         </div>
 
         {showScanner && (
-          <div className="bg-white rounded-2xl shadow-sm p-6 mb-6">
+          <div
+            className={`rounded-2xl shadow-sm p-6 mb-6 ${mode ? "bg-gray-800" : "bg-gray-100"}`}
+          >
             <QRScanner onSuccess={fetchModules} />
           </div>
         )}
