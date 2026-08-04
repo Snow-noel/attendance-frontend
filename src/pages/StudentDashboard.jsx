@@ -3,12 +3,14 @@ import Navbar from "../components/Navbar";
 import QRScanner from "../components/QrScanner";
 import { getStudentModules } from "../services/api";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeContext";
 
 function StudentDashboard() {
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showScanner, setShowScanner] = useState(false);
   const navigate = useNavigate();
+  const { mode } = useTheme();
 
   const fetchModules = useCallback(async () => {
     setLoading(true);
@@ -30,9 +32,10 @@ function StudentDashboard() {
   }, [fetchModules]);
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div
+      className={`min-h-screen ${mode ? "bg-gray-900 text-gray-400" : "bg-gray-100 text-gray-800"}`}
+    >
       <Navbar />
-
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">My Modules</h2>
@@ -50,7 +53,9 @@ function StudentDashboard() {
           </div>
         )}
 
-        <div className="bg-white rounded-2xl shadow-sm p-6">
+        <div
+          className={` rounded-2xl shadow-sm p-6 ${mode ? "bg-gray-800" : "bg-gray-400"}`}
+        >
           <h3 className="text-lg font-semibold text-gray-800 mb-4">
             Attendance by Module
           </h3>
@@ -64,13 +69,11 @@ function StudentDashboard() {
               {modules.map((module) => (
                 <div
                   key={module.id}
-                  className="flex flex-col justify-between items-start gap-2 p-2 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-all md:flex-row"
+                  className={`flex flex-col justify-between items-start gap-2 p-2 rounded-xl cursor-pointer transition-all md:flex-row ${mode ? "bg-gray-700 text-gray-200 hover:bg-gray-50 text-gray-800" : "bg-gray-100 hover:bg-gray-300 text-gray-800"}`}
                   onClick={() => navigate(`/student/modules/${module.id}`)}
                 >
                   <div>
-                    <p className="font-semibold text-gray-800">
-                      {module.module_name}
-                    </p>
+                    <p className="font-semibold">{module.module_name}</p>
                     {module.total_sessions < 2 ? (
                       <p>{module.total_sessions} session</p>
                     ) : (
