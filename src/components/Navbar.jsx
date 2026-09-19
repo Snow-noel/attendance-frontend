@@ -1,11 +1,17 @@
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useRef } from "react";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 
 function Navbar() {
-  const { user, logout } = useAuth();
+  const { studentUser, lecturerUser, logout } = useAuth();
+  const location = useLocation();
+
+  const isStudent = location.pathname.startsWith("/student");
+  const user = isStudent ? studentUser : lecturerUser;
+  const role = isStudent ? "student" : "lecturer";
+
   const { mode, changeMode } = useTheme();
   const profileKey = `profileImage_${user?.email}`;
   const [imageUrl, setImageUrl] = useState(
@@ -33,10 +39,9 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout();
+    logout(role);
     navigate("/");
   };
-
   return (
     <div className="relative">
       <nav
