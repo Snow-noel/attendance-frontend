@@ -145,11 +145,13 @@ function LecturerDashboard() {
               }}
             >
               <option value="">Select your module</option>
-              {modules.map((module) => (
-                <option key={module.id} value={module.id}>
-                  {module.name}
-                </option>
-              ))}
+              {modules.map((module) => {
+                return (
+                  <option key={module.id} value={module.id}>
+                    {module.name}
+                  </option>
+                );
+              })}
             </select>
 
             <button
