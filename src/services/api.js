@@ -6,7 +6,13 @@ const API = axios.create({
 });
 
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+  let token;
+  if (config.url.startsWith("/student")) {
+    token = localStorage.getItem("studentToken");
+  } else if (config.url.startsWith("/lecturer")) {
+    token = localStorage.getItem("lecturerToken");
+  }
+
   if (token) {
     config.headers.authorization = `Bearer ${token}`;
   }
@@ -17,15 +23,16 @@ export const studentRegister = (data) => API.post("/student/register", data);
 export const studentLogin = (data) => API.post("/student/login", data);
 export const lecturerRegister = (data) => API.post("/lecturer/register", data);
 export const lecturerLogin = (data) => API.post("/lecturer/login", data);
-export const startSession = (data) => API.post("/session/start", data);
-export const markAttendance = (data) => API.post("/attendance/mark", data);
+export const startSession = (data) => API.post("/lecturer/session/start", data);
+export const markAttendance = (data) =>
+  API.post("/student/attendance/mark", data);
 export const getStudentModules = () => API.get("/student/modules");
 export const getStudentModuleAttendance = (moduleId) =>
   API.get(`/student/attendance/${moduleId}`);
 export const getSessionAttendance = (sessionId) =>
-  API.get(`/session/${sessionId}/attendance`);
+  API.get(`/lecturer/session/${sessionId}/attendance`);
 export const getModuleSessions = (moduleId) =>
-  API.get(`/module/${moduleId}/sessions`);
+  API.get(`/lecturer/module/${moduleId}/sessions`);
 export const getSchools = () => API.get("/schools");
 export const getDepartments = (schoolId) => API.get(`/departments/${schoolId}`);
 export const getPrograms = (departmentId) =>
@@ -34,7 +41,8 @@ export const adminLogin = (data) => API.post("/admin/login", data);
 export const createLecturer = (data) => API.post("/lecturer/create", data);
 export const getAdminLecturers = () => API.get("/admin/lecturers");
 export const getAdminStudents = () => API.get("/admin/students");
-export const endSession = (sessionId) => API.post(`/session/${sessionId}/end`);
+export const endSession = (sessionId) =>
+  API.post(`/lecturer/session/${sessionId}/end`);
 export const forgotPassword = (data) => API.post("/forgot-password", data);
 export const resetPassword = (data) => API.post("/reset/password", data);
 export const getLecturerModules = () => API.get("/lecturer/modules");
