@@ -18,7 +18,6 @@ function Login() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    alert("about to call the API");
     setLoading(true);
     setError("");
     try {
@@ -26,9 +25,7 @@ function Login() {
         role === "student"
           ? await studentLogin({ email, password })
           : await lecturerLogin({ email, password });
-      alert("API responded");
       const decoded = JSON.parse(atob(response.data.token.split(".")[1]));
-      alert("decoded: " + JSON.stringify(decoded));
       login(
         {
           email: decoded.email,
