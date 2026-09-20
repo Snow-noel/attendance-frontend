@@ -2,7 +2,7 @@ import axios from "axios";
 // import { data } from "react-router-dom";
 
 const API = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "https://kjz1f9hm-3000.uks1.devtunnels.ms",
 });
 
 API.interceptors.request.use((config) => {
