@@ -20,7 +20,7 @@ function App() {
         <Route
           path="/student/dashboard"
           element={
-            <RouterProtector>
+            <RouterProtector role="student">
               <StudentDashboard />
             </RouterProtector>
           }
@@ -28,7 +28,7 @@ function App() {
         <Route
           path="/lecturer/dashboard"
           element={
-            <RouterProtector>
+            <RouterProtector role="lecturer">
               <LecturerDashboard />
             </RouterProtector>
           }
