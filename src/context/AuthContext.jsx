@@ -2,17 +2,30 @@ import { createContext, useState, useContext } from "react";
 
 const AuthContext = createContext();
 
+function getUserFromToken(token) {
+  if (!token) return null;
+  try {
+    const decoded = JSON.parse(atob(token.split(".")[1]));
+    return decoded;
+  } catch {
+    return null;
+  }
+}
+
 export function AuthProvider({ children }) {
-  const [studentUser, setStudentUser] = useState(null);
   const [studentToken, setStudentToken] = useState(
     localStorage.getItem("studentToken") || null,
   );
+  const [studentUser, setStudentUser] = useState(
+    getUserFromToken(studentToken),
+  );
 
-  const [lecturerUser, setLecturerUser] = useState(null);
   const [lecturerToken, setLecturerToken] = useState(
     localStorage.getItem("lecturerToken") || null,
   );
-
+  const [lecturerUser, setLecturerUser] = useState(
+    getUserFromToken(lecturerToken),
+  );
   const login = (userData, userToken) => {
     if (userData.role === "student") {
       setStudentUser(userData);
